@@ -9,7 +9,12 @@ var ListManager = React.createClass({
     // We have an empty array of items, then a space for new text
     return { items: [], newItemText: ''};
   },
-  handleSubmit: function() {
+  onChange: function(e){
+    // Grabbing new item text
+    // When user types
+    this.setState({newItemText: e.target.value});
+  },
+  handleSubmit: function(e) {
     // Handle data submission
     // Let's not use the onclick
     e.preventDefault();
@@ -26,14 +31,14 @@ var ListManager = React.createClass({
 
     // Explicitly set state & update items
     // setState is a function - call it when you wanna change the state of your app
-    this.setState(items: currentItems, newItemText: '');
+    this.setState({items: currentItems, newItemText: ''});
   },
   // When user is typing, it'll go into newItemText
   render: function() {
     return(
       <div>
         <h3>{this.props.title}</h3>
-        <form onSubmit="{this.handleSubmit}">
+        <form onSubmit={this.handleSubmit}>
             <input onChange={this.onChange} value={this.state.newItemText} />
             <button>Add</button>
         </form>
@@ -42,3 +47,5 @@ var ListManager = React.createClass({
     );
   }
 });
+
+module.exports = ListManager;

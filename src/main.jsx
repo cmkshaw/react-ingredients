@@ -3,8 +3,7 @@
 // npm start to compile main.js
 var React = require('react');
 var ReactDOM = require('react-dom');
+var ListManager = require('./components/ListManager.jsx');
 
-var List = require('./components/List.jsx');
-
-//Grab the DOM, let's insert a list in #ingredients ID
-ReactDOM.render(<List/>, document.getElementById('ingredients'));
+//Passing down an immutable property
+ReactDOM.render(<ListManager title="Ingredients" />, document.getElementById("ingredients"));

@@ -19031,25 +19031,25 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],159:[function(require,module,exports){
-//Require react when we need it
 var React = require('react');
-//Import a non npm module e.g. your own module
+// Import list item
 var ListItem = require('./ListItem.jsx');
-
-var ingredients = [{ "id": 1, "text": "ham" }, { "id": 2, "text": "cheese" }, { "id": 3, "text": "turkey" }];
 
 var List = React.createClass({
   displayName: 'List',
 
   render: function () {
-    var listItems = ingredients.map(function (item) {
-      return React.createElement(ListItem, { key: item.id, ingredient: item.text });
-    });
-
+    // Create a list of ingredients
+    // Rule of thumb: Get into the habit of showing a list a unique identifier
+    var createItem = function (text, index) {
+      return React.createElement(ListItem, { key: index + text, text: text });
+    };
+    // Calling map function, passing in to create the list item
+    // For every item in the items array
     return React.createElement(
       'ul',
       null,
-      listItems
+      this.props.items.map(createItem)
     );
   }
 });
@@ -19057,13 +19057,13 @@ var List = React.createClass({
 module.exports = List;
 
 },{"./ListItem.jsx":160,"react":157}],160:[function(require,module,exports){
-//Require react when we need it
 var React = require('react');
 
-//Create a list item component
 var ListItem = React.createClass({
   displayName: 'ListItem',
 
+  //Takes .jsx & shows it
+  // Grab the property "text" from this object
   render: function () {
     return React.createElement(
       'li',
@@ -19071,24 +19071,88 @@ var ListItem = React.createClass({
       React.createElement(
         'h4',
         null,
-        this.props.ingredient
+        this.props.text
       )
     );
   }
 });
 
-//Export it, so you can require it elsewhere
 module.exports = ListItem;
 
 },{"react":157}],161:[function(require,module,exports){
+var React = require('react');
+var List = require('./List.jsx');
+
+//This class will be able to handle user input
+var ListManager = React.createClass({
+  displayName: 'ListManager',
+
+  //Define property
+  getInitialState: function () {
+    // Every component will call this property (function)
+    // We have an empty array of items, then a space for new text
+    return { items: [], newItemText: '' };
+  },
+  onChange: function (e) {
+    // Grabbing new item text
+    // When user types
+    this.setState({ newItemText: e.target.value });
+  },
+  handleSubmit: function (e) {
+    // Handle data submission
+    // Let's not use the onclick
+    e.preventDefault();
+
+    // Components have properties and STATE
+    // This.props = readonly
+    // This.state = Changeable data
+
+    // Grab Items
+    var currentItems = this.state.items;
+
+    // New Item text, push to end of Array
+    currentItems.push(this.state.newItemText);
+
+    // Explicitly set state & update items
+    // setState is a function - call it when you wanna change the state of your app
+    this.setState({ items: currentItems, newItemText: '' });
+  },
+  // When user is typing, it'll go into newItemText
+  render: function () {
+    return React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'h3',
+        null,
+        this.props.title
+      ),
+      React.createElement(
+        'form',
+        { onSubmit: this.handleSubmit },
+        React.createElement('input', { onChange: this.onChange, value: this.state.newItemText }),
+        React.createElement(
+          'button',
+          null,
+          'Add'
+        )
+      ),
+      React.createElement(List, { items: this.state.items })
+    );
+  }
+});
+
+module.exports = ListManager;
+
+},{"./List.jsx":159,"react":157}],162:[function(require,module,exports){
 // Entry point where things enter into DOM
 // Name the NPM packages
+// npm start to compile main.js
 var React = require('react');
 var ReactDOM = require('react-dom');
+var ListManager = require('./components/ListManager.jsx');
 
-var List = require('./components/List.jsx');
+//Passing down an immutable property
+ReactDOM.render(React.createElement(ListManager, { title: 'Ingredients' }), document.getElementById("ingredients"));
 
-//Grab the DOM, let's insert a list in #ingredients ID
-ReactDOM.render(React.createElement(List, null), document.getElementById('ingredients'));
-
-},{"./components/List.jsx":159,"react":157,"react-dom":1}]},{},[161]);
+},{"./components/ListManager.jsx":161,"react":157,"react-dom":1}]},{},[162]);
